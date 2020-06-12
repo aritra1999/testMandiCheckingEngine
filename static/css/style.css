@@ -1,0 +1,9 @@
+body{
+    background-color: rgba(242, 242, 246, 0.56) !important;
+}
+.container{
+    background-color: #ffffff !important;
+}
+.code-area{
+    padding: 20px;
+}
