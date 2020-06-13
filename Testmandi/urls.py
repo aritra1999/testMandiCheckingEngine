@@ -18,12 +18,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from dashboard.views import dashboard_view, question_details_view
+from dashboard.views import dashboard_view, question_details_view, submissions_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', dashboard_view, name="dashboard"),
-    path('question/<str:hit>', question_details_view, name="question")
+    path('question/<str:hit>', question_details_view, name="question"),
+    path('submissions/', submissions_view, name="submissions")
 ]
 
 if settings.DEBUG:

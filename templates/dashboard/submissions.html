@@ -1,0 +1,41 @@
+{% extends "base/base.html" %}
+{% block content %}
+    <h2>Your Submissions</h2>
+    <br>
+    <div class="accordion" id="accordionExample">
+        {% for submission in submissions %}
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-dark d-flex justify-content-between align-items-center"
+                                type="button" data-toggle="collapse"
+                                data-target="#collapse{{ submission.id }}" aria-expanded="true"
+                                aria-controls="collapse{{ submission.id }}">
+                            {{ forloop.counter }}. <strong>{{ submission.question_hit }}</strong>
+
+                            <span><strong>Time taken: </strong>{{ submission.time_taken }} seconds.</span>
+
+                            {% if submission.verdict %}
+                                <span class="badge badge-success ">Correct answer</span>
+                            {% else %}
+                                <span class="badge badge-danger ">Wrong answer</span>
+                            {% endif %}
+
+                            <span class="badge badge-light">{{ submission.time_stamp }}</span>
+                        </button>
+                    </h2>
+                </div>
+
+                <div id="collapse{{ submission.id }}" class="collapse" aria-labelledby="headingOne"
+                     data-parent="#accordionExample">
+                    <div class="card-body">
+
+                        <textarea rows="25" class="w-100 code-area" style="border: none;"
+                                  readonly>{{ submission.solution }}</textarea>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

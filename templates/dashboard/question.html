@@ -2,22 +2,31 @@
 {% block content %}
     {% load markdown_deux_tags %}
     <form action="" method="POST">{% csrf_token %}
-        {% if result == "Correct Answer" %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Correcr Answer!</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% elif result == "Wrong Answer" %}
+        {% if error %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Wrong Answer!</strong>
+                <strong>Compilation Error!</strong>
+                {{ error }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+        {% else %}
+            {% if result == "Correct Answer" %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong class="mr-4">Correcr Answer!</strong> Time taken: {{ time_taken }} s.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% elif result == "Wrong Answer" %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Wrong Answer!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
         {% endif %}
-
         <div class="row">
             <div class="col-10">
                 <h2>{{ question.title }}</h2>
@@ -26,7 +35,7 @@
                 </small>
             </div>
             <div class="col-2 pr-3">
-                <button class="btn btn-primary mt-2" type="submit" name="submit">
+                <button class="btn btn-warning mt-3 float-right" type="submit" name="submit">
                     Submit
                 </button>
             </div>
@@ -41,29 +50,29 @@
         </p>
 
         <div class="row">
-            <div class="col-10">
+            <div class="col-8">
                 <h2>Submit</h2>
                 <small class="text-muted">
                     <strong>Max File Size: 20MB</strong>
                 </small>
             </div>
-            <div class="col-2">
-                <label for="inputState">Language</label>
-                <select id="inputState" class="form-control" name="language">
+            <div class="col-2 sticky-top form-inline">
+                <select name="language" class="custom-select my-1 mr-sm-2" style="width: 200px" id="inlineFormCustomSelectPref">
                     <option selected>C++</option>
                     <option>C</option>
                     <option>Python</option>
-                    <option>Jave</option>
+                    <option>Java</option>
                 </select>
+            </div>
+            <div class="col-2 sticky-top">
+                <button class="btn btn-warning mt-3 btn-block" type="submit" name="submit">
+                    Submit
+                </button>
             </div>
         </div>
         <hr>
         <textarea name="solution" id="" class="w-100 code-area" rows="30" placeholder="Enter your code here."
                   required></textarea>
-
-        <button class="btn btn-primary mt-3" type="submit" name="submit">
-            Submit
-        </button>
     </form>
 
 {% endblock %}
