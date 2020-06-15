@@ -6,4 +6,5 @@ body{
 }
 .code-area{
     padding: 20px;
+    display: none;
 }

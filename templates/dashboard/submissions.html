@@ -1,41 +1,53 @@
 {% extends "base/base.html" %}
 {% block content %}
-    <h2>Your Submissions</h2>
-    <br>
-    <div class="accordion" id="accordionExample">
-        {% for submission in submissions %}
-            <div class="card">
-                <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                        <button class="btn btn-link btn-block text-dark d-flex justify-content-between align-items-center"
-                                type="button" data-toggle="collapse"
-                                data-target="#collapse{{ submission.id }}" aria-expanded="true"
-                                aria-controls="collapse{{ submission.id }}">
-                            {{ forloop.counter }}. <strong>{{ submission.question_hit }}</strong>
+    <div class="container p-4">
 
-                            <span><strong>Time taken: </strong>{{ submission.time_taken }} seconds.</span>
+        <h2>Your Submissions</h2>
+        <div class="text-muted">
+            Totoal Submission: {{ submissions.count }}
+        </div>
+        <hr>
+        <br>
+        <div class="accordion" id="accordionExample">
+            {% for submission in submissions %}
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-dark d-flex justify-content-between align-items-center"
+                                    type="button" data-toggle="collapse"
+                                    data-target="#collapse{{ submission.id }}" aria-expanded="true"
+                                    aria-controls="collapse{{ submission.id }}">
+                                {{ forloop.counter }}. <strong>{{ submission.question_hit }}</strong>
 
-                            {% if submission.verdict %}
-                                <span class="badge badge-success ">Correct answer</span>
-                            {% else %}
-                                <span class="badge badge-danger ">Wrong answer</span>
-                            {% endif %}
+                                {% if submission.language == "c_cpp" %}
+                                    C/C++
+                                {% elif submission.language == "python" %}
+                                    Python
+                                {% endif %}
+                                <span><strong>Time taken: </strong>{{ submission.time_taken }} seconds.</span>
 
-                            <span class="badge badge-light">{{ submission.time_stamp }}</span>
-                        </button>
-                    </h2>
-                </div>
+                                {% if submission.verdict %}
+                                    <span class="badge badge-success ">Correct answer</span>
+                                {% else %}
+                                    <span class="badge badge-danger ">Wrong answer</span>
+                                {% endif %}
 
-                <div id="collapse{{ submission.id }}" class="collapse" aria-labelledby="headingOne"
-                     data-parent="#accordionExample">
-                    <div class="card-body">
+                                <span class="badge badge-light">{{ submission.time_stamp }}</span>
+                            </button>
+                        </h2>
+                    </div>
 
-                        <textarea rows="25" class="w-100 code-area" style="border: none;"
+                    <div id="collapse{{ submission.id }}" class="collapse" aria-labelledby="headingOne"
+                         data-parent="#accordionExample">
+                        <div class="card-body">
+
+                        <textarea rows="10" class="w-100" style="border: none; padding: 20px;"
                                   readonly>{{ submission.solution }}</textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}

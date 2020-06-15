@@ -1,0 +1,25 @@
+{% load static %}
+<style type="text/css" media="screen">
+    #editor {
+        position: relative;
+        height: 70vh;
+        right: 0;
+        bottom: 0;
+    }
+</style>
+
+<div name="editor" id="editor">{% if code %}{{ code }}{% endif %}</div>
+
+<script src="{% static 'ace/ace.js' %} " type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'ace/ext-language_tools.js' %} "></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome");
+    editor.setFontSize(15);
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+    editor.session.setMode("ace/mode/c_cpp");
+</script>
