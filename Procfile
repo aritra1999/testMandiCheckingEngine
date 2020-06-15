@@ -1,1 +1,1 @@
-web: gunicorn Testman.wsgi
+web: gunicorn Testmandi.wsgi
