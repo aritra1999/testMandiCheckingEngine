@@ -44,8 +44,12 @@ def question_details_view(request, hit):
             Submission.objects.create(user=user, question_hit=question_hit, time_taken=time_taken, verdict=verdict, solution=solution, language=language).save()
 
     code = Submission.objects.filter(user=user, question_hit=hit).order_by('-time_stamp')
-    context["code"] = code.first().solution
-    context["language"] = code.first().language
+    if code.count > 0:
+        context["code"] = code.first().solution
+        context["language"] = code.first().language
+    else:
+        context["code"] = ""
+        context["language"] = "c_cpp"
 
     return render(request, 'dashboard/question.html', context)
 
