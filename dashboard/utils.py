@@ -7,7 +7,6 @@ import subprocess
 def code_checker(request, code, lang, question_hit, username):
     inputs = Input.objects.filter(question_hit=question_hit)
     verdict_count = 0
-    verdict = True
     time_taken = 0.0
 
     for input in inputs:
@@ -23,6 +22,10 @@ def code_checker(request, code, lang, question_hit, username):
             run_command = (
             "python3 " + run_file_name + ".py <" + run_file_name + ".in> " + run_file_name + ".txt")
             ext = ".py"
+        elif lang == 'java':
+            run_command = (
+                    "java " + run_file_name + ".java <" + run_file_name + ".in> " + run_file_name + ".txt")
+            ext = ".java"
 
         open(run_file_name + ext, "w").write(code)
         open(run_file_name + ".in", "w").write(test_input)
