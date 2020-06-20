@@ -5,13 +5,20 @@ from .models import Question, Submission, Output, Input
 from .utils import code_checker
 
 def dashboard_view(request):
+    context = {
+        "title": "Dashboard"
+    }
+    return render(request, 'dashboard/dashboard.html', context)
+
+
+def question_list_view(request):
     questions = Question.objects.all()
     context = {
         "title": "Dashboard",
         "questions": questions
     }
 
-    return render(request, 'dashboard/home.html', context)
+    return render(request, 'dashboard/question-list.html', context)
 
 
 def question_details_view(request, hit):

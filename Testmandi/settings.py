@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['localhost', 'testmandi.herokuapp.com']
 
 INSTALLED_APPS = [
     'dashboard',
+    'users',
+
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -120,8 +122,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [

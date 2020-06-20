@@ -11,5 +11,4 @@ function code_submit(){
     code = editor.getSession().getValue();
     document.getElementById('solution').innerHTML = code;
     document.getElementById('code_form').submit();
-
 }
