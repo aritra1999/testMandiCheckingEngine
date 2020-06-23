@@ -7,9 +7,17 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard' %}">Home</a>
-            </li>
+            {% if request.user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'staff' %}">Home</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">Home</a>
+                </li>
+            {% endif %}
+
+
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'question-list' %}">Practice</a>
             </li>
@@ -20,9 +28,11 @@
                 <a class="nav-link" href="#">Jobs</a>
             </li>
         </ul>
+
         {% if request.user.is_authenticated %}
             <div class="dropleft">
-                <a class="nav-link text-light dropdown-toggle mr-5" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                <a class="nav-link text-light dropdown-toggle mr-5" href="#" id="navbarDropdown" role="button"
+                   data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     {{ request.user.username }}
                 </a>
@@ -34,8 +44,9 @@
                 </div>
             </div>
         {% else %}
-            <a class="nav-link text-light mr-5" href="{% url 'reglogin' %}" role="button" aria-haspopup="true" aria-expanded="false">
-                    Register/Login
+            <a class="nav-link text-light mr-5" href="{% url 'reglogin' %}" role="button" aria-haspopup="true"
+               aria-expanded="false">
+                Register/Login
             </a>
         {% endif %}
 

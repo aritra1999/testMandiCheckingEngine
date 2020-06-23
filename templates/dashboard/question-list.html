@@ -1,7 +1,16 @@
 {% extends "base/base.html" %}
 {% block content %}
 
+
     <div class="container p-4">
+        <div class="row">
+            <div class="col p-4">
+                {% include 'dashboard/search.html' %}
+            </div>
+            <div class="col p-4">
+                {% include 'dashboard/filter.html' %}
+            </div>
+        </div>
         <h2>Questions</h2>
         <br>
         <ul class="list-group">
@@ -9,7 +18,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>
                         {{ forloop.counter }}.
-                        <a href="question/{{ question.hit }}" class="text-dark">{{ question.hit }} | {{ question.title }}</a>
+                        <a href="{{ question.hit }}" class="text-dark">{{ question.hit }} | {{ question.title }}</a>
                     </span>
                     <span class="badge badge-danger badge-pill">Hard</span>
                 </li>

@@ -2,7 +2,9 @@
 {% block content %}
 
     {% load markdown_deux_tags %}
-
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
     <form action="" id="code_form" method="POST">{% csrf_token %}
         <div class="row">
             <div class="col-6">
@@ -55,7 +57,14 @@
                 </p>
 
                 <hr>
-                <button type="button" class="btn btn-outline-dark">View Solution.</button>
+                <div class="row text-center">
+                    <div class="col">
+                        <a href="{% url 'submissions' %}" class="text-primary">View My Solutions</a>
+                    </div>
+                    <div class="col">
+                        <a href="#" class="text-primary">View Actual Solution.</a>
+                    </div>
+                </div>
             </div>
             <div class="col-6">
                 <div class="row">
