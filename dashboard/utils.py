@@ -1,30 +1,29 @@
-from .models import Question, Submission, Output, Input
+from .models import Question, Submission, IO
 
 import requests, os, time
 import subprocess
 
 
 def code_checker(request, code, lang, question_hit, username):
-    inputs = Input.objects.filter(question_hit=question_hit)
+    ios = IO.objects.filter(question_hit=question_hit)
     verdict_count = 0
     time_taken = 0.0
 
-    for input in inputs:
-        test_input = input.input
-        test_output = Output.objects.get(question_hit=question_hit, output_number=input.input_number).output
+    for io in ios:
+        test_input = io.input
+        test_output = io.output
         run_command = ext = ""
         run_file_name = ("media/Code/" + username + "_" + question_hit)
 
         if lang == 'c_cpp':
-            run_command = ("g++ " + run_file_name + ".cpp -o " + run_file_name + ".out && ./" + run_file_name + ".out <" + run_file_name + ".in> " + run_file_name + ".txt")
+            subprocess.run("g++ " + run_file_name + ".cpp -o " + run_file_name + ".out ", shell=True)
+            run_command = ("./" + run_file_name + ".out <" + run_file_name + ".in> " + run_file_name + ".txt")
             ext = ".cpp"
         elif lang == 'python':
-            run_command = (
-            "python3 " + run_file_name + ".py <" + run_file_name + ".in> " + run_file_name + ".txt")
+            run_command = ("python3 " + run_file_name + ".py <" + run_file_name + ".in> " + run_file_name + ".txt")
             ext = ".py"
         elif lang == 'java':
-            run_command = (
-                    "java " + run_file_name + ".java <" + run_file_name + ".in> " + run_file_name + ".txt")
+            run_command = ("java " + run_file_name + ".java <" + run_file_name + ".in> " + run_file_name + ".txt")
             ext = ".java"
 
         open(run_file_name + ext, "w").write(code)
@@ -42,9 +41,15 @@ def code_checker(request, code, lang, question_hit, username):
         if (output).strip() == (test_output).strip():verdict_count += 1
         os.remove(run_file_name + ".txt")
 
-    if verdict_count == len(inputs):verdict = True
+    if verdict_count == len(ios):verdict = True
     else: verdict = False
 
 
     return time_taken, verdict
+
+
+def gen_hit(title):
+    hit = ""
+    for word in title.split():hit += word[0].upper()
+    return hit
 

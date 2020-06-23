@@ -1,8 +1,7 @@
 from django.contrib import admin
-from .models import Question, Submission, Input, Output
+from .models import Question, Submission, IO
 
 admin.site.register(Question)
 admin.site.register(Submission)
-admin.site.register(Input)
-admin.site.register(Output)
+admin.site.register(IO)
 
