@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+    <div class="container p-5">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <strong>Assessment Code:</strong> {{ assessment.code }}
+                <hr>
+                <strong>Time Limit:</strong> {{ assessment.time_limit }} min.
+                <hr>
+                <strong>Questions: </strong> <br>
+                {% for question in questions %}
+                    {{ forloop.counter }}. {{ question }} <br>
+                {% endfor %}
+
+
+            </li>
+        </ul>
+    </div>
+
+{% endblock %}

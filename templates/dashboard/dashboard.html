@@ -1,6 +1,13 @@
 {% extends "base/base.html" %}
 {% block content %}
 
-    <h1>Welcome to the dashboard</h1>
+    <div class="container p-5">
+        <h1>Welcome to the dashboard</h1>
+        <hr>
+        {% if request.user.is_staff %}
+            <a href="/staff">Go to staff dashboard</a>
+        {% endif %}
+
+    </div>
 
 {% endblock %}

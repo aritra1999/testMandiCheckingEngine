@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['localhost', 'testmandi.herokuapp.com', 'ec2-3-23-99-187.us-eas
 # Application definition
 
 INSTALLED_APPS = [
+    'assessment',
     'dashboard',
     'users',
 

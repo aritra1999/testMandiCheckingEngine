@@ -1,150 +1,154 @@
 {% extends "base/base.html" %}
 {% block content %}
 
-    {% load markdown_deux_tags %}
-    <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-    </script>
-    <form action="" id="code_form" method="POST">{% csrf_token %}
-        <div class="row">
-            <div class="col-6">
+    <div class="p-4">
+        {% load markdown_deux_tags %}
+        <script type="text/javascript" async
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+        <form action="" id="code_form" method="POST">{% csrf_token %}
+            <div class="row">
+                <div class="col-6">
 
-                {% if error %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>Compilation Error!</strong>
-                        {{ error }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% else %}
-                    {% if result == "Correct Answer" %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong class="mr-4">Correcr Answer!</strong> Time taken: {{ time_taken }} s.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    {% elif result == "Wrong Answer" %}
+                    {% if error %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Wrong Answer!</strong>
+                            <strong>Compilation Error!</strong>
+                            {{ error }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
+                    {% else %}
+                        {% if result == "Correct Answer" %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong class="mr-4">Correcr Answer!</strong> Time taken: {{ time_taken }} s.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% elif result == "Wrong Answer" %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Wrong Answer!</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                <div class="row">
-                    <div class="col-10">
-                        <h2>{{ question.title }}</h2>
-                        <small class="text-muted">
-                            {{ question.time_stamp }}
-                        </small>
+                    <div class="row">
+                        <div class="col-10">
+                            <h2>{{ question.title }}</h2>
+                            <small class="text-muted">
+                                {{ question.time_stamp }}
+                            </small>
+                        </div>
+                        <div class="col-2 pr-3">
+                            {#                <button class="btn btn-warning mt-3 float-right btn-block" type="submit" name="submit">#}
+                            {#                    Submit#}
+                            {#                </button>#}
+                        </div>
                     </div>
-                    <div class="col-2 pr-3">
-                        {#                <button class="btn btn-warning mt-3 float-right btn-block" type="submit" name="submit">#}
-                        {#                    Submit#}
-                        {#                </button>#}
+                    <hr>
+                    <p>
+                        <strong>Time Limit:</strong> {{ question.time_limit }} Second <br>
+                        <strong>Memory Limit:</strong> 256 MB
+                    </p>
+                    <p>
+                        {{ question.question | markdown }}
+                    </p>
+
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col">
+                            <a href="{% url 'submissions' %}" class="text-primary">View My Solutions</a>
+                        </div>
+                        <div class="col">
+                            <a href="#" class="text-primary">View Actual Solution.</a>
+                        </div>
                     </div>
                 </div>
-                <hr>
-                <p>
-                    <strong>Time Limit:</strong> {{ question.time_limit }} Second <br>
-                    <strong>Memory Limit:</strong> 256 MB
-                </p>
-                <p>
-                    {{ question.question | markdown }}
-                </p>
-
-                <hr>
-                <div class="row text-center">
-                    <div class="col">
-                        <a href="{% url 'submissions' %}" class="text-primary">View My Solutions</a>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-5">
+                            <h2>Submit</h2>
+                            <small class="text-muted">
+                                <strong>Max File Size: 20MB</strong>
+                            </small>
+                        </div>
+                        <div class="col-3 form-inline">
+                            <select name="theme" class="custom-select my-1 mr-sm-2" onchange="change_theme(theme)"
+                                    style="width: 200px" id="inlineFormCustomSelectPref">
+                                <optgroup label="Bright">
+                                    <option class="theme-option" value="chrome">Chrome</option>
+                                    <option class="theme-option" value="clouds">Clouds</option>
+                                    <option class="theme-option" value="crimson_editor">Crimson Editor</option>
+                                    <option class="theme-option" value="dawn">Dawn</option>
+                                    <option class="theme-option" value="dreamweaver">Dreamweaver</option>
+                                    <option class="theme-option" value="eclipse">Eclipse</option>
+                                    <option class="theme-option" value="github">GitHub</option>
+                                    <option class="theme-option" value="iplastic">IPlastic</option>
+                                    <option class="theme-option" value="solarized_light">Solarized Light</option>
+                                    <option class="theme-option" value="textmate">TextMate</option>
+                                    <option class="theme-option" value="tomorrow">Tomorrow</option>
+                                    <option class="theme-option" value="xcode">Xcode</option>
+                                    <option class="theme-option" value="kuroir">Kuroir</option>
+                                    <option class="theme-option" value="katzenmilch">KatzenMilch</option>
+                                    <option class="theme-option" value="sqlserver">SQL Server</option>
+                                </optgroup>
+                                <optgroup label="Dark">
+                                    <option class="theme-option" value="ambiance">Ambiance</option>
+                                    <option class="theme-option" value="chaos">Chaos</option>
+                                    <option class="theme-option" value="clouds_midnight">Clouds Midnight</option>
+                                    <option class="theme-option" value="dracula">Dracula</option>
+                                    <option class="theme-option" value="cobalt">Cobalt</option>
+                                    <option class="theme-option" value="gruvbox">Gruvbox</option>
+                                    <option class="theme-option" value="gob">Green on Black</option>
+                                    <option class="theme-option" value="idle_fingers">idle Fingers</option>
+                                    <option class="theme-option" value="kr_theme">krTheme</option>
+                                    <option class="theme-option" value="merbivore">Merbivore</option>
+                                    <option class="theme-option" value="merbivore_soft">Merbivore Soft</option>
+                                    <option class="theme-option" value="mono_industrial">Mono Industrial</option>
+                                    <option class="theme-option" value="monokai">Monokai</option>
+                                    <option class="theme-option" value="nord_dark">Nord Dark</option>
+                                    <option class="theme-option" value="pastel_on_dark">Pastel on dark</option>
+                                    <option class="theme-option" value="solarized_dark">Solarized Dark</option>
+                                    <option class="theme-option" value="terminal">Terminal</option>
+                                    <option class="theme-option" value="tomorrow_night">Tomorrow Night</option>
+                                    <option class="theme-option" value="tomorrow_night_blue">Tomorrow Night Blue
+                                    </option>
+                                    <option class="theme-option" value="tomorrow_night_bright">Tomorrow Night Bright
+                                    </option>
+                                    <option class="theme-option" value="tomorrow_night_eighties">Tomorrow Night 80s
+                                    </option>
+                                    <option class="theme-option" value="twilight">Twilight</option>
+                                    <option class="theme-option" value="vibrant_ink">Vibrant Ink</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="col-2 sticky-top form-inline">
+                            <select name="language" id="language" class="custom-select my-1"
+                                    onchange="change_lang(language)"
+                                    style="width: 200px" id="inlineFormCustomSelectPref">
+                                <option value="c_cpp" selected>C++</option>
+                                <option value="c_cpp">C</option>
+                                <option value="python">Python 3</option>
+                                <option value="java">Java</option>
+                            </select>
+                        </div>
+                        <div class="col-2 sticky-top">
+                            <button class="btn btn-warning mt-3 btn-block" type="button" onclick="code_submit()">
+                                Submit
+                            </button>
+                        </div>
                     </div>
-                    <div class="col">
-                        <a href="#" class="text-primary">View Actual Solution.</a>
-                    </div>
+                    <hr>
+                    {% include 'dashboard/editor.html' %}
+                    <textarea name="solution" id="solution" class="w-100 code-area" rows="30"></textarea>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-5">
-                        <h2>Submit</h2>
-                        <small class="text-muted">
-                            <strong>Max File Size: 20MB</strong>
-                        </small>
-                    </div>
-                    <div class="col-3 form-inline">
-                        <select name="theme" class="custom-select my-1 mr-sm-2" onchange="change_theme(theme)"
-                                style="width: 200px" id="inlineFormCustomSelectPref">
-                            <optgroup label="Bright">
-                                <option class="theme-option" value="chrome">Chrome</option>
-                                <option class="theme-option" value="clouds">Clouds</option>
-                                <option class="theme-option" value="crimson_editor">Crimson Editor</option>
-                                <option class="theme-option" value="dawn">Dawn</option>
-                                <option class="theme-option" value="dreamweaver">Dreamweaver</option>
-                                <option class="theme-option" value="eclipse">Eclipse</option>
-                                <option class="theme-option" value="github">GitHub</option>
-                                <option class="theme-option" value="iplastic">IPlastic</option>
-                                <option class="theme-option" value="solarized_light">Solarized Light</option>
-                                <option class="theme-option" value="textmate">TextMate</option>
-                                <option class="theme-option" value="tomorrow">Tomorrow</option>
-                                <option class="theme-option" value="xcode">Xcode</option>
-                                <option class="theme-option" value="kuroir">Kuroir</option>
-                                <option class="theme-option" value="katzenmilch">KatzenMilch</option>
-                                <option class="theme-option" value="sqlserver">SQL Server</option>
-                            </optgroup>
-                            <optgroup label="Dark">
-                                <option class="theme-option" value="ambiance">Ambiance</option>
-                                <option class="theme-option" value="chaos">Chaos</option>
-                                <option class="theme-option" value="clouds_midnight">Clouds Midnight</option>
-                                <option class="theme-option" value="dracula">Dracula</option>
-                                <option class="theme-option" value="cobalt">Cobalt</option>
-                                <option class="theme-option" value="gruvbox">Gruvbox</option>
-                                <option class="theme-option" value="gob">Green on Black</option>
-                                <option class="theme-option" value="idle_fingers">idle Fingers</option>
-                                <option class="theme-option" value="kr_theme">krTheme</option>
-                                <option class="theme-option" value="merbivore">Merbivore</option>
-                                <option class="theme-option" value="merbivore_soft">Merbivore Soft</option>
-                                <option class="theme-option" value="mono_industrial">Mono Industrial</option>
-                                <option class="theme-option" value="monokai">Monokai</option>
-                                <option class="theme-option" value="nord_dark">Nord Dark</option>
-                                <option class="theme-option" value="pastel_on_dark">Pastel on dark</option>
-                                <option class="theme-option" value="solarized_dark">Solarized Dark</option>
-                                <option class="theme-option" value="terminal">Terminal</option>
-                                <option class="theme-option" value="tomorrow_night">Tomorrow Night</option>
-                                <option class="theme-option" value="tomorrow_night_blue">Tomorrow Night Blue</option>
-                                <option class="theme-option" value="tomorrow_night_bright">Tomorrow Night Bright
-                                </option>
-                                <option class="theme-option" value="tomorrow_night_eighties">Tomorrow Night 80s</option>
-                                <option class="theme-option" value="twilight">Twilight</option>
-                                <option class="theme-option" value="vibrant_ink">Vibrant Ink</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div class="col-2 sticky-top form-inline">
-                        <select name="language" id="language" class="custom-select my-1"
-                                onchange="change_lang(language)"
-                                style="width: 200px" id="inlineFormCustomSelectPref">
-                            <option value="c_cpp" selected>C++</option>
-                            <option value="c_cpp">C</option>
-                            <option value="python">Python 3</option>
-                            <option value="java">Java</option>
-                        </select>
-                    </div>
-                    <div class="col-2 sticky-top">
-                        <button class="btn btn-warning mt-3 btn-block" type="button" onclick="code_submit()">
-                            Submit
-                        </button>
-                    </div>
-                </div>
-                <hr>
-                {% include 'dashboard/editor.html' %}
-                <textarea name="solution" id="solution" class="w-100 code-area" rows="30"></textarea>
-            </div>
-        </div>
-    </form>
+        </form>
 
+    </div>
     <script>
         var lang = "{{ language }}";
         document.getElementById('language').value = lang;

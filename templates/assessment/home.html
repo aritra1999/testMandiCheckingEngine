@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+    <div class="container p-5">
+        <h3>Assesment Home</h3>
+        <br>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        <div class="w-50">
+            <form action="" method="POST">{% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Enter Assessment ID</label>
+                    <input type="text" class="form-control" name="assessment" required/>
+                </div>
+                <button type="submit" class="btn btn-dark px-5 py-2 m-3">Start Assesment</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

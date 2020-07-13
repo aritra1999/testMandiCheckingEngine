@@ -2,7 +2,7 @@
 {% block content %}
 
 
-    <div class="container p-4">
+    <div class="container p-5">
         <div class="row">
             <div class="col p-4">
                 {% include 'dashboard/search.html' %}
@@ -20,7 +20,7 @@
                         {{ forloop.counter }}.
                         <a href="{{ question.hit }}" class="text-dark">{{ question.hit }} | {{ question.title }}</a>
                     </span>
-                    <span class="badge badge-danger badge-pill">Hard</span>
+                    <span class="badge badge-danger badge-pill">{{ question.difficulty }} star</span>
                 </li>
             {% endfor %}
 

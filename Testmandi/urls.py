@@ -3,18 +3,21 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from dashboard.views import question_list_view, question_details_view, submissions_view, dashboard_view, staff_view, add_question_view
+from dashboard.views import question_list_view, question_details_view, submissions_view, dashboard_view, staff_view, add_code_question_view, add_mcq_question_view, add_mcq_solution_view
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('staff/', staff_view, name='staff'),
-    path('staff/add/', add_question_view, name='add-question'),
+    path('staff/add_code_question/', add_code_question_view, name='add-code-question'),
+    path('staff/add_mcq_question/', add_mcq_question_view, name='add-mcq-question'),
+    path('staff/add_mcq_solution/<hit>', add_mcq_solution_view, name='add-mcq-solution'),
     path('', dashboard_view, name="dashboard"),
     path('question/', question_list_view, name="question-list"),
     path('question/<str:hit>', question_details_view, name="question"),
     path('submissions/', submissions_view, name="submissions"),
-    path('auth/', include('users.urls'), name='auth')
+    path('auth/', include('users.urls'), name='auth'),
+    path('assessment/', include('assessment.urls'), name='assessment'),
 ]
 
 if settings.DEBUG:

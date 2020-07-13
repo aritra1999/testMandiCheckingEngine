@@ -1,0 +1,56 @@
+{% extends "base/base.html" %}
+{% block content %}
+    <div class="container p-5">
+        <h2>Add MCQ Question</h2>
+        <hr>
+        <form method="POST" class="mt-3 mb-3" action="">{% csrf_token %}
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Quesstion</label>
+                <div class="col-8">
+                    <input type="text" name="question" id="title" class="form-control" placeholder="Enter Question Title" required>
+                </div>
+                <div class="col">
+                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
+                    <select class="custom-select mr-sm-2" name="difficulty">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <label>Topic</label>
+                    <input type="text" class="form-control mr-sm-2" name="topic">
+                </div>
+                <div class="col">
+                    <label>Sub Topic</label>
+                    <input type="text" class="form-control mr-sm-2" name="subtopic">
+                </div>
+                <div class="col">
+                    <label>Sub Sub Topic</label>
+                    <input type="text" class="form-control mr-sm-2" name="subsubtopic">
+                </div>
+            </div>
+            <br>
+            <div class="form-row">
+                <div class="col">
+                    <label>Category</label>
+                    <input type="text" class="form-control" name="category">
+                </div>
+                <div class="col">
+                    <label>Sub Category</label>
+                    <input type="text" class="form-control" name="subcategory">
+                </div>
+                <div class="col">
+                    <label>Sub Sub Category</label>
+                    <input type="text" class="form-control" name="subsubcategory">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary px-5 py-2 m-3">Add Solutions</button>
+        </form>
+    </div>
+
+{% endblock %}
