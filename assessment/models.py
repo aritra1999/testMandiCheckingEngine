@@ -10,3 +10,13 @@ class Assessment(models.Model):
     def __str__(self):
         return str(self.code)
 
+
+class AssessmentManager(models.Model):
+    assessment_code = models.CharField(max_length=10, null=True, blank=True)
+    user = models.CharField(max_length=120, null=True, blank=True)
+    start_time = models.DateTimeField(blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+    time_taken = models.TimeField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.user)

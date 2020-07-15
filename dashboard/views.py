@@ -53,8 +53,14 @@ def question_details_view(request, hit):
                     context["result"] = "Wrong Answer"
 
                 context["time_taken"] = round(time_taken, 2)
-                Submission.objects.create(user=user.username, question_hit=question_hit, time_taken=time_taken,
-                                          verdict=verdict, solution=solution, language=language).save()
+                Submission.objects.create(
+                    user=user.username,
+                    question_hit=question_hit,
+                    time_taken=time_taken,
+                    verdict=verdict,
+                    solution=solution,
+                    language=language
+                ).save()
         else:
             return redirect('/auth/')
     code = Submission.objects.filter(user=user.username, question_hit=hit).order_by('-time_stamp')
@@ -118,11 +124,21 @@ def add_code_question_view(request):
             time_limit = 1
             hit = gen_hit(title)
 
-            Question.objects.create(title=title, question=question, difficulty=difficulty, hit=hit, topic=topic,
-                                    subtopic=subtopic, subsubtopic=subsubtopic, category=category, subcategory=subcategory, subsubcategory=subsubcategory,
-                                    time_limit=time_limit).save()
-            IO.objects.create(question_hit=hit, io_number=1, input=input1, output=output1)
-            IO.objects.create(question_hit=hit, io_number=2, input=input2, output=output2)
+            Question.objects.create(
+                title=title,
+                question=question,
+                difficulty=difficulty,
+                hit=hit,
+                topic=topic,
+                subtopic=subtopic,
+                subsubtopic=subsubtopic,
+                category=category,
+                subcategory=subcategory,
+                subsubcategory=subsubcategory,
+                time_limit=time_limit
+            ).save()
+            IO.objects.create(question_hit=hit, io_number=1, input=input1, output=output1).save()
+            IO.objects.create(question_hit=hit, io_number=2, input=input2, output=output2).save()
 
             return redirect('/staff/')
         return render(request, "dashboard/add_code_question.html", context)
@@ -147,8 +163,11 @@ def add_mcq_question_view(request):
             subsubcategory = request.POST.get('subsubcategory')
             hit = gen_hit(question)
 
-            MCQQuestion.objects.create(question=question, difficulty=difficulty, hit=hit, topic=topic,
-                                    subtopic=subtopic, subsubtopic=subsubtopic, category=category,
+            MCQQuestion.objects.create(question=question,
+                                       difficulty=difficulty,
+                                       hit=hit,
+                                       topic=topic,
+                                       subtopic=subtopic, subsubtopic=subsubtopic, category=category,
                                     subcategory=subcategory, subsubcategory=subsubcategory).save()
             return redirect('/staff/add_mcq_solution/' + hit)
 

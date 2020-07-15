@@ -31,3 +31,13 @@ input[type="color"]:focus,
   box-shadow: none !important;
   outline: 0 none !important;
 }
+
+.countdown-timer{
+    position: fixed;
+    bottom: -18px;
+    right: 0;
+    padding: 15px 50px;
+    color: #FFFFFF;
+    background: #222222;
+    z-index: 1000;
+}

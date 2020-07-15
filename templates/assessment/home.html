@@ -10,7 +10,7 @@
             </div>
         {% endif %}
         <div class="w-50">
-            <form action="" method="POST">{% csrf_token %}
+            <form action="" target="_blank" method="POST">{% csrf_token %}
                 <div class="form-group">
                     <label for="exampleFormControlInput1">Enter Assessment ID</label>
                     <input type="text" class="form-control" name="assessment" required/>
@@ -19,5 +19,6 @@
             </form>
         </div>
     </div>
+
 
 {% endblock %}
