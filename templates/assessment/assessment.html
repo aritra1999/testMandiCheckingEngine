@@ -2,48 +2,52 @@
 {% block content %}
 
     <div class="container p-5">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <h4>Assessment</h4>
-                <hr>
-                <small>
-                <strong> Time Limit:</strong> {{ assessment.time_limit }} min. <br>
-                <strong> Test Code:</strong> {{ assessment.code }} <br>
-                <strong> Start Time:</strong> {{ manager.start_time }} <br>
-                <strong> End Time:</strong> {{ manager.end_time }} <br>
-                <strong> User:</strong> {{ manager.user }} <br>
-                </small>
-                <hr>
-
-                <h5>Coding questions: </h5>
-                {% for question in questions %}
-                    {{ forloop.counter }}.<a href="#"> {{ question }} </a> | {{ question.difficulty }} Stars |  <br>
-                {% endfor %}
-                <br>
-
-                <h5>MCQ questions: </h5>
-                {% for mcqquestion in mcqquestions %}
+        <form id="assessmentform" action="" method="POST">{% csrf_token %}
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <h4>Assessment</h4>
                     <hr>
-                    {{ forloop.counter }}. {{ mcqquestion }} <br>
-                    {% for mcqsolution in mcqsolutions %}
-                        {% if mcqquestion.hit == mcqsolution.question_hit %}
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="{{ mcqsolution.question_hit }}{{ forloop.counter }}">
-                                <label class="custom-control-label" for="{{ mcqsolution.question_hit }}{{ forloop.counter }}">{{ mcqsolution }}</label>
-                            </div>
-                        {% endif %}
+                    <small>
+                        <strong> Time Limit:</strong> {{ assessment.time_limit }} min. <br>
+                        <strong> Test Code:</strong> {{ assessment.code }} <br>
+                        <strong> Start Time:</strong> {{ manager.start_time }} <br>
+                        <strong> End Time:</strong> {{ manager.end_time }} <br>
+                        <strong> User:</strong> {{ manager.user }} <br>
+                    </small>
+                    <hr>
+
+                    <h5>Coding questions: </h5>
+                    {% for question in questions %}
+                        {{ forloop.counter }}.<a href="#"> {{ question }} </a> | {{ question.difficulty }} Stars |  <br>
                     {% endfor %}
-                {% endfor %}
+                    <br>
 
-                <br>
-                <button type="submit" class="btn btn-dark px-5 py-2 m-3">Submit</button>
-            </li>
-        </ul>
+                    <h5>MCQ questions: </h5>
+                    {% for mcqquestion in mcqquestions %}
+                        <hr>
+                        {{ forloop.counter }}. {{ mcqquestion }} <br>
+                        {% for mcqsolution in mcqsolutions %}
+                            {% if mcqquestion.hit == mcqsolution.question_hit %}
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input"
+                                           name="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}"
+                                           id="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}">
+                                    <label class="custom-control-label" for="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}">{{ mcqsolution.solution }}</label>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
 
-        <p class="countdown-timer">
-            The Page will be closing in: <span id="countTime"></span>
-        </p>
+                    {% endfor %}
 
+                    <br>
+                    <button type="submit" class="btn btn-dark px-5 py-2 m-3">Submit</button>
+                </li>
+            </ul>
+
+            <p class="countdown-timer">
+                The Page will be closing in: <span id="countTime"></span>
+            </p>
+        </form>
         <script>
 
 
@@ -59,7 +63,7 @@
 
             var counter = function () {
                 if (value <= 0) {
-                    window.close();
+                    document.getElementById("assessmentform").submit();
                 } else {
 
                     value -= 1000;

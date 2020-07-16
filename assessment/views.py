@@ -2,8 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 import datetime, time
 
-from .models import Assessment, AssessmentManager
+from .models import Assessment, AssessmentManager, AssessmentSubmission
 from dashboard.models import Question, MCQQuestion, MCQSolution
+
 
 @login_required
 def assessment_home_view(request):
@@ -33,6 +34,7 @@ def assessment_home_view(request):
 
     return render(request, "assessment/home.html", context)
 
+
 @login_required
 def assessment_view(request, assessment_code):
     try:
@@ -44,7 +46,6 @@ def assessment_view(request, assessment_code):
     mcqquestions = []
     mcqsolutions = []
     hits = assessment.question_id.split(',')
-
 
     for hit in hits:
         try:
@@ -65,10 +66,8 @@ def assessment_view(request, assessment_code):
 
     manager = AssessmentManager.objects.get(assessment_code=assessment_code, user=request.user)
 
-    print(manager.end_time)
-    print(datetime.datetime.now())
-
-    rem_time = int(time.mktime(manager.end_time.timetuple())) * 1000 - int(time.mktime(datetime.datetime.now().timetuple())) * 1000
+    rem_time = int(time.mktime(manager.end_time.timetuple())) * 1000 - int(
+        time.mktime(datetime.datetime.now().timetuple())) * 1000
     warning_time = manager.end_time - datetime.timedelta(minutes=5)
 
     context = {
@@ -83,9 +82,51 @@ def assessment_view(request, assessment_code):
     }
     if rem_time < 0:
         context['error'] = "Your Time is up"
+        if request.method == "POST":
+            data = request.POST
+            for mcqsolution in mcqsolutions:
+                query = str(mcqsolution.question_hit + "|" + mcqsolution.solution)
+                try:
+                    instances = data[query]
+                    correctness = "True"
+                except:
+                    correctness = "False"
+
+                print(correctness)
+                AssessmentSubmission.objects.create(
+                    user=request.user.username,
+                    assessment_code=assessment_code,
+                    question_hit=mcqsolution.question_hit,
+                    solution=mcqsolution,
+                    correctness=correctness,
+                ).save()
+
         return render(request, "assessment/home.html", context)
+
+    if request.method == "POST":
+        data = request.POST
+        for mcqsolution in mcqsolutions:
+            query = str(mcqsolution.question_hit + "|" + mcqsolution.solution)
+            try:
+                instances = data[query]
+                correctness = "True"
+            except:
+                correctness = "False"
+
+            print(correctness)
+            AssessmentSubmission.objects.create(
+                user=request.user.username,
+                assessment_code=assessment_code,
+                question_hit=mcqsolution.question_hit,
+                solution=mcqsolution.solution,
+                correctness=correctness,
+            ).save()
+
     return render(request, 'assessment/assessment.html', context)
 
 
+def assessment_success_view(request):
+    context = {
 
-
+    }
+    return render()
