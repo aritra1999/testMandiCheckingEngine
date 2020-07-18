@@ -92,7 +92,7 @@ def assessment_view(request, assessment_code):
                 except:
                     correctness = "False"
 
-                print(correctness)
+
                 AssessmentSubmission.objects.create(
                     user=request.user.username,
                     assessment_code=assessment_code,
@@ -100,7 +100,7 @@ def assessment_view(request, assessment_code):
                     solution=mcqsolution,
                     correctness=correctness,
                 ).save()
-
+                return redirect('/assessment/success/')
         return render(request, "assessment/home.html", context)
 
     if request.method == "POST":
@@ -113,7 +113,7 @@ def assessment_view(request, assessment_code):
             except:
                 correctness = "False"
 
-            print(correctness)
+
             AssessmentSubmission.objects.create(
                 user=request.user.username,
                 assessment_code=assessment_code,
@@ -121,12 +121,12 @@ def assessment_view(request, assessment_code):
                 solution=mcqsolution.solution,
                 correctness=correctness,
             ).save()
-
+            return redirect('/assessment/success/')
     return render(request, 'assessment/assessment.html', context)
 
 
 def assessment_success_view(request):
     context = {
-
+        'title': 'Submission Successful'
     }
-    return render()
+    return render(request, 'assessment/successs.html', context)

@@ -3,53 +3,97 @@
 
     <div class="container p-5">
         <form id="assessmentform" action="" method="POST">{% csrf_token %}
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <h4>Assessment</h4>
-                    <hr>
-                    <small>
-                        <strong> Time Limit:</strong> {{ assessment.time_limit }} min. <br>
-                        <strong> Test Code:</strong> {{ assessment.code }} <br>
-                        <strong> Start Time:</strong> {{ manager.start_time }} <br>
-                        <strong> End Time:</strong> {{ manager.end_time }} <br>
-                        <strong> User:</strong> {{ manager.user }} <br>
-                    </small>
-                    <hr>
+            <div class="card card-body">
+                <h4>Assessment</h4>
+                <hr>
+                <small>
+                    <strong> Time Limit:</strong> {{ assessment.time_limit }} min. <br>
+                    <strong> Test Code:</strong> {{ assessment.code }} <br>
+                    {#                        <strong> Start Time:</strong> {{ manager.start_time }} <br>#}
+                    {#                        <strong> End Time:</strong> {{ manager.end_time }} <br>#}
+                    <strong> User:</strong> {{ manager.user }} <br>
+                    <strong> Total Questions: </strong> MCQ: {{ mcqquestions|length }}, Code: {{ questions|length }}
+                    <br>
+                </small>
+            </div>
+            <br>
 
+            <div class="card">
+                <div class="card-body">
                     <h5>Coding questions: </h5>
+                    <hr>
                     {% for question in questions %}
-                        {{ forloop.counter }}.<a href="#"> {{ question }} </a> | {{ question.difficulty }} Stars |  <br>
-                    {% endfor %}
-                    <br>
 
+                        {{ forloop.counter }}.<a href="#"
+                                                 onclick='window.open("/question/{{ question.hit }}", "_blank", "toolbar=no,scrollbars=no,resizable=yes, width=800")'> {{ question }} </a>
+                        | {{ question.difficulty }} Stars |  <br>
+                    {% endfor %}
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
                     <h5>MCQ questions: </h5>
+
                     {% for mcqquestion in mcqquestions %}
-                        <hr>
-                        {{ forloop.counter }}. {{ mcqquestion }} <br>
-                        {% for mcqsolution in mcqsolutions %}
-                            {% if mcqquestion.hit == mcqsolution.question_hit %}
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input"
-                                           name="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}"
-                                           id="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}">
-                                    <label class="custom-control-label" for="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}">{{ mcqsolution.solution }}</label>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-
+                        <div id="question{{ forloop.counter0 }}" style="display: none;min-height: 150px">
+                            <hr>
+                            {{ forloop.counter }}. {{ mcqquestion }} <br>
+                            {% for mcqsolution in mcqsolutions %}
+                                {% if mcqquestion.hit == mcqsolution.question_hit %}
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                               name="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}"
+                                               id="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}">
+                                        <label class="custom-control-label"
+                                               for="{{ mcqquestion.hit }}|{{ mcqsolution.solution }}">{{ mcqsolution.solution }}</label>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     {% endfor %}
-
-                    <br>
-                    <button type="submit" class="btn btn-dark px-5 py-2 m-3">Submit</button>
-                </li>
-            </ul>
-
+                    <button type="button" onclick="prev()" class="btn btn-link btn-sm float-left">Prev
+                    </button>
+                    <button type="button" onclick="next()" class="btn btn-link btn-sm float-right">Next
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dark px-5 py-2 m-3 ">Submit</button>
             <p class="countdown-timer">
                 The Page will be closing in: <span id="countTime"></span>
             </p>
         </form>
         <script>
 
+            var current_index = 0;
+            const total_questions = {{ mcqquestions|length }};
+            var question = "question" + current_index;
+
+            console.log(question);
+
+            document.getElementById(question.toString()).style.display = "block";
+
+            function prev() {
+                document.getElementById("question" + current_index).style.display = "none";
+                if (current_index == 0) {
+                    current_index = total_questions - 1;
+                } else {
+                    current_index -= 1;
+                }
+                document.getElementById("question" + current_index).style.display = "block";
+                console.log(current_index);
+            }
+
+            function next() {
+                document.getElementById("question" + current_index).style.display = "none";
+                if (current_index >= total_questions - 1) {
+                    current_index = 0;
+                } else {
+                    current_index += 1;
+                }
+                console.log(current_index);
+                document.getElementById("question" + current_index).style.display = "block";
+            }
 
             if (sessionStorage.getItem("counter")) {
                 if (sessionStorage.getItem("counter") <= 0) {
