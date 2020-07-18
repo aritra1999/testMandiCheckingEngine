@@ -25,7 +25,7 @@ SECRET_KEY = 'ydbz2t0@ukbnv4i%5gq_(@fi$6tdyk0p3sxu*h#=l=e8!s1&pc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'testmandi.herokuapp.com', 'ec2-3-23-99-187.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['localhost', 'testmandi.herokuapp.com','*', 'ec2-3-23-99-187.us-east-2.compute.amazonaws.com']
 
 
 # Application definition
