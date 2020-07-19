@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 import datetime, time
 
 from .models import Assessment, AssessmentManager, AssessmentSubmission
-from dashboard.models import Question, MCQQuestion, MCQSolution
+from dashboard.models import Question, Submission, MCQQuestion, MCQSolution
 
 
 @login_required
@@ -45,7 +45,18 @@ def assessment_view(request, assessment_code):
     questions = []
     mcqquestions = []
     mcqsolutions = []
+    code_submissions = []
+
     hits = assessment.question_id.split(',')
+    manager = AssessmentManager.objects.get(assessment_code=assessment_code, user=request.user)
+
+    for hit in hits:
+        try:
+            sub = Submission.objects.filter(user=request.user, question_hit=hit, time_stamp__range=[manager.start_time, manager.end_time])
+            if sub.count() > 0:
+                code_submissions.append(sub)
+        except:
+            continue
 
     for hit in hits:
         try:
@@ -54,21 +65,22 @@ def assessment_view(request, assessment_code):
             continue
 
     for hit in hits:
+        instances = MCQSolution.objects.filter(question_hit=hit)
+        for instance in instances:
+            mcqsolutions.append(instance)
         try:
             mcqquestions.append(MCQQuestion.objects.get(hit=hit))
         except:
             continue
 
-    for hit in hits:
-        instances = MCQSolution.objects.filter(question_hit=hit)
-        for instance in instances:
-            mcqsolutions.append(instance)
 
-    manager = AssessmentManager.objects.get(assessment_code=assessment_code, user=request.user)
+    # for hit in hits:
+    #     instances = MCQSolution.objects.filter(question_hit=hit)
+    #     for instance in instances:
+    #         mcqsolutions.append(instance)
 
-    rem_time = int(time.mktime(manager.end_time.timetuple())) * 1000 - int(
-        time.mktime(datetime.datetime.now().timetuple())) * 1000
-    warning_time = manager.end_time - datetime.timedelta(minutes=5)
+
+    rem_time = int(time.mktime(manager.end_time.timetuple())) * 1000 - int(time.mktime(datetime.datetime.now().timetuple())) * 1000
 
     context = {
         'title': assessment_code,
@@ -77,7 +89,7 @@ def assessment_view(request, assessment_code):
         'mcqquestions': mcqquestions,
         'mcqsolutions': mcqsolutions,
         'manager': manager,
-        'warnig_time': warning_time,
+        'code_submissions': code_submissions,
         'rem_time': rem_time
     }
     if rem_time < 0:

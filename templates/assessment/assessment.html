@@ -26,7 +26,33 @@
 
                         {{ forloop.counter }}.<a href="#"
                                                  onclick='window.open("/question/{{ question.hit }}", "_blank", "toolbar=no,scrollbars=no,resizable=yes, width=800")'> {{ question }} </a>
-                        | {{ question.difficulty }} Stars |  <br>
+                        | {{ question.difficulty }} Stars |
+                        <button type="button" class="btn btn-link"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="right"
+                                data-html="true"
+                                data-trigger="focus"
+                                title="Submissions"
+                                data-content="
+                                    {% for submissions in code_submissions %}
+                                        {% for submission in submissions %}
+                                            {% if question.hit == submission.question_hit %}
+
+                                                {% if submission.verdict %}
+                                                    <span class='badge badge-success'>Correct answer</span>
+                                                {% else %}
+                                                    <span class='badge badge-danger'>Wrong answer</span>
+                                                {% endif %}
+                                                | {{ submission.time_stamp }} <br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                ">
+                            Submissions
+
+                        </button>
+                        <br>
                     {% endfor %}
                 </div>
             </div>

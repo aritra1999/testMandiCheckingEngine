@@ -13,3 +13,9 @@ function code_submit() {
     document.getElementById('code_form').submit();
 }
 
+$(function () {
+    $('[data-toggle="popover"]').popover()
+    $('.popover-dismiss').popover({
+      trigger: 'focus'
+    })
+})
