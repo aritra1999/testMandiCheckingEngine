@@ -20,6 +20,11 @@
                         <option>3</option>
                         <option>4</option>
                         <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
 
                     </select>
                 </div>
@@ -27,33 +32,34 @@
 
             <div class="form-row">
                 <div class="col">
-                    <label>Topic</label>
-                    <input type="text" class="form-control mr-sm-2" name="topic">
+                    <label>Level 1</label>
+                    <!-- <input type="text" class="form-control mr-sm-2" name="topic"> -->
+                    <select name="topic" id="category" onload="get_sub_sectors(this);" onchange="get_sub_sectors(this);" class="form-control mr-sm-2">
+                        {% for x in sectors %}
+                              <option value="{{x.levelone}}">{{x.levelone}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col">
-                    <label>Sub Topic</label>
-                    <input type="text" class="form-control mr-sm-2" name="subtopic">
+                    <label>Level 2 </label>
+                    <!-- <input  type="text" class="form-control mr-sm-2" name="subtopic"> -->
+                    <select name="subtopic" id="sub_category" onchange="get_sub_sub_sectors(this);" class="form-control mr-sm-2"></select>
                 </div>
                 <div class="col">
-                    <label>Sub Sub Topic</label>
-                    <input type="text" class="form-control mr-sm-2" name="subsubtopic">
+                    <label>Level 3</label>
+                    <!-- <input type="text" class="form-control mr-sm-2" name="subsubtopic"> -->
+                    <select name="subsubtopic" id="sub_sub_category" class="form-control mr-sm-2"></select>
                 </div>
             </div>
             <br>
             <div class="form-row">
                 <div class="col">
-                    <label>Category</label>
-                    <input type="text" class="form-control" name="category">
-                </div>
-                <div class="col">
-                    <label>Sub Category</label>
-                    <input type="text" class="form-control" name="subcategory">
-                </div>
-                <div class="col">
-                    <label>Sub Sub Category</label>
-                    <input type="text" class="form-control" name="subsubcategory">
+                    <label>Time limit in seconds</label>
+                    <input type="number" class="form-control mr-sm-2" name="time-limit">
                 </div>
             </div>
+            <br>
+
             <br>
             <div class="form-group">
                 <label for="exampleFormControlTextarea1">Question Statement</label>
@@ -62,18 +68,18 @@
 
             <div class="form-row">
                 <div class="col">
-                    <label>Test Input 1</label>
-                    <textarea class="form-control" name="input1" rows="5"></textarea>
-                    <br>
-                    <label>Test Input 2</label>
-                    <textarea class="form-control" name="input2" rows="5"></textarea>
+                    {% for num in '1234567890'|make_list %}
+                        <label>Test Input {{ forloop.counter }}</label>
+                        <textarea class="form-control" name="input{{ forloop.counter }}" rows="3" required></textarea>
+                        <br>
+                    {% endfor %}
                 </div>
                 <div class="col">
-                    <label>Test Outupt 1</label>
-                    <textarea class="form-control" name="output1" rows="5"></textarea>
-                    <br>
-                    <label>Test Outupt 2</label>
-                    <textarea class="form-control" name="output2" rows="5"></textarea>
+                    {% for num in '1234567890'|make_list %}
+                        <label>Test Outupt {{ forloop.counter }}</label>
+                        <textarea class="form-control" name="output{{ forloop.counter }}" rows="3" required></textarea>
+                        <br>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -81,7 +87,53 @@
 
 
         </form>
+        <script>
+            function get_sub_sectors(ele){
+                var id = ele.id;
+                console.log($('#' + id).val());
+                $.ajax({
+                    url: "/metadata/question_category/",
+                    data: {
+                        'sector': $('#' + id).val()
+                    },
+                    success: function(output){
+                        var e = $('#sub_' + id);
+                        e.html(output);
+                        // console.log(output);
+                        // console.log(e.val());
+                        // get_sub_sub_sectors(e);
+                        $.ajax({
+                                url: "/metadata/question_subcategory/",
+                                data: {
+                                    'sector': e.val()
+                                },
+                                success: function(output){
+                                    var e = $('#sub_sub_' + id);
+                                    e.html(output);
+                                    // console.log(output);
+                                }
+                            });
+                    }
+                });
+            }
+            function get_sub_sub_sectors(ele){
+                var id = ele.id;
+                // console.log($('#' + id).val());
+                $.ajax({
+                    url: "/metadata/question_subcategory/",
+                    data: {
+                        'sector': $('#' + id).val()
+                    },
+                    success: function(output){
+                        var e = $('#sub_' + id);
+                        e.html(output);
+                        // console.log(output);
+                    }
+                });
+            }
+        </script>
     </div>
+
 
 
     {#Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet dolores illo iste magnam molestias mollitia sed velit? Ab aspernatur, at eveniet illo iste magni numquam repellendus sit temporibus! Id, magni?#}

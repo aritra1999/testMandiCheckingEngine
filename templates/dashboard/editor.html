@@ -8,8 +8,8 @@
     }
 </style>
 
-<div name="editor" id="editor">{% if code %}{{ code }}{% endif %}</div>
-
+<!-- <div name="editor" id="editor">{% if code %}{{ code }}{% endif %}</div> -->
+<div name="editor" id="editor"></div> 
 <script src="{% static 'ace/ace.js' %} " type="text/javascript" charset="utf-8"></script>
 <script src="{% static 'ace/ext-language_tools.js' %} "></script>
 <script>
@@ -21,5 +21,21 @@
         enableSnippets: true,
         enableLiveAutocompletion: true
     });
-    editor.session.setMode("ace/mode/c_cpp");
+    editor.session.setMode("ace/mode/python");
+
+
+    // $( document ).ready(function() {
+    //     $.ajax({
+    //     url: "/metadata/language_default/",
+    //     data: {
+    //         'sector': 'python'
+    //     },
+    //     success: function(output){
+    //         // var e = $('#sub_' + id);
+    //         // e.html(output);
+    //         editor.setValue(output)
+    //         console.log(output);
+    //     }
+    // });
+    // });
 </script>

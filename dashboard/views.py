@@ -1,9 +1,14 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+import os
 
-from .models import Question, Submission, IO, MCQQuestion, MCQSolution
+from .models import Question, Submission, MCQQuestion, MCQSolution
 from .utils import code_checker, gen_hit
+from metadata.views import business_sector
+from metadata.models import Languagedefault
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def dashboard_view(request):
@@ -23,11 +28,58 @@ def question_list_view(request):
     return render(request, 'dashboard/question-list.html', context)
 
 
+@csrf_exempt
+def question_validate(request,hit):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            question_hit = hit
+            solution = request.POST.get('solution')
+            language = request.POST.get('language')
+
+            time_taken, verdict = code_checker(request, solution, language, question_hit, username=request.user.username)
+            # verdict = "error"
+            # print(solution)
+            # print(language)
+            if verdict == "error":
+                context = {}
+                context["error"] = "There's some error in your code. Please check and retry."
+                context["code"] = solution
+                context["language"] = language
+                context["result"] = "There's some error in your code. Please check and retry."
+                context["time_taken"] = 0
+                return JsonResponse(context)
+
+                # return render(request, 'dashboard/question.html', context)
+            else:
+                context = {}
+                context["error"] = "no error"
+                if verdict == True:
+                    context["result"] = "Correct Answer"
+                else:
+                    context["result"] = "Wrong Answer"
+
+                context["time_taken"] = round(time_taken, 2)
+                Submission.objects.create(
+                    user=request.user.username,
+                    question_hit=question_hit,
+                    time_taken=time_taken,
+                    verdict=verdict,
+                    solution=solution,
+                    language=language
+                ).save()
+                return JsonResponse(context)
+        else:
+            return redirect('/auth/')
+
+
 def question_details_view(request, hit):
     question = Question.objects.get(hit=hit)
+    language = Languagedefault.objects.all()
+
     context = {
         "title": hit,
-        "question": question
+        "question": question,
+        "lang":language
     }
 
     user = request.user
@@ -45,7 +97,9 @@ def question_details_view(request, hit):
                 context["code"] = solution
                 context["language"] = language
 
-                return render(request, 'dashboard/question.html', context)
+                return JsonResponse(context)
+
+                # return render(request, 'dashboard/question.html', context)
             else:
                 if verdict == True:
                     context["result"] = "Correct Answer"
@@ -103,7 +157,9 @@ def staff_view(request):
 @login_required
 def add_code_question_view(request):
     if request.user.is_staff:
+        sectors = business_sector()
         context = {
+            'sectors': sectors,
             "title": "Add Question"
         }
         if request.method == "POST":
@@ -112,19 +168,11 @@ def add_code_question_view(request):
             topic = request.POST.get('topic')
             subtopic = request.POST.get('subtopic')
             subsubtopic = request.POST.get('subsubtopic')
-            category = request.POST.get('category')
-            subcategory = request.POST.get('subcategory')
-            subsubcategory = request.POST.get('subsubcategory')
             question = request.POST.get('question')
-            input1 = request.POST.get('input1')
-            input2 = request.POST.get('input2')
-            output1 = request.POST.get('output1')
-            output2 = request.POST.get('output2')
-
-            time_limit = 1
+            time_limit = request.POST.get('time-limit')
             hit = gen_hit(title)
 
-            Question.objects.create(
+            q=Question.objects.create(
                 title=title,
                 question=question,
                 difficulty=difficulty,
@@ -132,23 +180,103 @@ def add_code_question_view(request):
                 topic=topic,
                 subtopic=subtopic,
                 subsubtopic=subsubtopic,
-                category=category,
-                subcategory=subcategory,
-                subsubcategory=subsubcategory,
                 time_limit=time_limit
-            ).save()
-            IO.objects.create(question_hit=hit, io_number=1, input=input1, output=output1).save()
-            IO.objects.create(question_hit=hit, io_number=2, input=input2, output=output2).save()
+            )
+            q.hit=hit+str(q.id)
+            q.save()
+
+            os.makedirs("media/IO/" + str(q.hit))
+
+            for number in range(1, 11):
+                input = request.POST.get('input' + str(number))
+                output = request.POST.get('output' + str(number))
+
+                input_file = open("media/IO/" + q.hit + "/input" + str(number) + ".in", "x")
+                input_file.write(input)
+                output_file = open("media/IO/" + q.hit + "/output" + str(number) + ".out", "x")
+                output_file.write(output)
+
 
             return redirect('/staff/')
         return render(request, "dashboard/add_code_question.html", context)
     else:
         return redirect("/")
 
+
+@login_required
+def update_code_question_view(request, hit):
+    if request.user.is_staff:
+        sectors = business_sector()
+        question = Question.objects.get(hit=hit)
+        inputs = []
+        outputs = []
+
+        for number in range(1,11):
+            inputs.append(open("media/IO/" + str(hit) + "/input" + str(number) + ".in" ).read())
+            outputs.append(open("media/IO/" + str(hit) + "/output" + str(number) + ".out" ).read())
+
+
+        context = {
+            'sectors': sectors,
+            "title": "Add Question",
+            "questions":question,
+            "inputs": inputs,
+            "outputs": outputs
+        }
+        if request.method == "POST":
+            title = request.POST.get('title')
+            difficulty = request.POST.get('difficulty')
+            topic = request.POST.get('topic')
+            subtopic = request.POST.get('subtopic')
+            subsubtopic = request.POST.get('subsubtopic')
+            question = request.POST.get('question')
+            input1 = request.POST.get('input1')
+            input2 = request.POST.get('input2')
+            output1 = request.POST.get('output1')
+            output2 = request.POST.get('output2')
+            time_limit = request.POST.get('time-limit')
+
+            Question.objects.filter(hit=hit).update(
+                question=question,
+                difficulty=difficulty,
+                hit=hit,
+                topic=topic,
+                subtopic=subtopic,
+                subsubtopic=subsubtopic,
+                time_limit=time_limit
+            ).save()
+
+            for number in range(1, 11):
+                input = request.POST.get('input' + str(number))
+                output = request.POST.get('output' + str(number))
+
+                input_file = open("media/IO/" + hit + "/input" + str(number) + ".in", "w")
+                input_file.write(input)
+                output_file = open("media/IO/" + hit + "/output" + str(number) + ".out", "w")
+                output_file.write(output)
+
+            return redirect('/staff/')
+        return render(request, "dashboard/update_code_question.html", context)
+    else:
+        return redirect("/")
+
+
+@login_required
+def delete_code_question_view(request, hit):
+    if request.user.is_staff:
+        Question.objects.filter(hit=hit).delete()
+        IO.objects.filter(question_hit=hit).delete()
+        return redirect('/staff/')
+
+    else:
+        return redirect("/")
+
 @login_required
 def add_mcq_question_view(request):
+    sectors = business_sector()
     if request.user.is_staff:
         context = {
+            "sectors":sectors,
             "title": "Add Question"
         }
 
@@ -158,17 +286,13 @@ def add_mcq_question_view(request):
             topic = request.POST.get('topic')
             subtopic = request.POST.get('subtopic')
             subsubtopic = request.POST.get('subsubtopic')
-            category = request.POST.get('category')
-            subcategory = request.POST.get('subcategory')
-            subsubcategory = request.POST.get('subsubcategory')
             hit = gen_hit(question)
 
             MCQQuestion.objects.create(question=question,
                                        difficulty=difficulty,
                                        hit=hit,
                                        topic=topic,
-                                       subtopic=subtopic, subsubtopic=subsubtopic, category=category,
-                                    subcategory=subcategory, subsubcategory=subsubcategory).save()
+                                       subtopic=subtopic, subsubtopic=subsubtopic).save()
             return redirect('/staff/add_mcq_solution/' + hit)
 
         return render(request, "dashboard/add_mcq_question.html", context)
@@ -200,3 +324,4 @@ def add_mcq_solution_view(request, hit):
             return redirect('/')
 
     return render(request, "dashboard/add_mcq_solution.html", context)
+

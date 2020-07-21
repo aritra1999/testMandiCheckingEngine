@@ -1,13 +1,15 @@
+
 {% extends "base/base.html" %}
 {% block content %}
-
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/staff.css" %}">
     <div class="container p-5">
         <h2>Welcome to the Staff Dashboard</h2>
         <hr>
         <a class="btn btn-dark px-5 py-2 m-3" href="{% url 'add-code-question' %}" role="button">Add Coding Question</a>
         <a class="btn btn-dark px-5 py-2 m-3" href="{% url 'add-mcq-question' %}" role="button">Add MCQ Question</a>
         <hr>
-        <h3>Questions</h3>
+        <h3>Coding Questions</h3>
         <div class="row">
             <div class="col">
                 <ul class="list-group">
@@ -15,13 +17,19 @@
                         <li class="list-group-item">
                             {{ forloop.counter }}. {{ question.hit }} | {{ question.title }}
                             | {{ question.difficulty }} star |
-                            <a href="#">Edit</a>
+                            <a href="/staff/update_code_question/{{ question.hit }}">Edit</a> |
+                            <a href="/staff/delete_code_question/{{ question.hit }}">Delete</a>
                             <br>
                             <small class="text-muted">{{ question.time_stamp }}</small>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
+
+        </div>
+        <hr>
+        <h3>MCQ Questions</h3>
+        <div class="row">
             <div class="col">
                 <ul class="list-group">
                     {% for question in mcqquestions %}
@@ -29,7 +37,8 @@
                             {{ forloop.counter }}. {{ question.hit }} | {{ question.question }}
                             | {{ question.difficulty }} star |
                             <a href="/staff/add_mcq_solution/{{ question.hit }}">Add Option</a> |
-                            <a href="#">Edit</a>
+                            <a href="#">Edit</a> |
+                            <a href="#">Delete</a>
                             <br>
                             <small class="text-muted">{{ question.time_stamp }}</small>
                         </li>
@@ -38,6 +47,8 @@
             </div>
         </div>
     </div>
+
+ 
 
 {% endblock %}
 

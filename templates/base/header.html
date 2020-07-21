@@ -7,9 +7,12 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">Home</a>
+            </li>
             {% if request.user.is_staff %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'staff' %}">Home</a>
+                    <a class="nav-link" href="{% url 'staff' %}">Staff Access</a>
                 </li>
             {% else %}
                 <li class="nav-item">
@@ -25,8 +28,11 @@
                 <a class="nav-link" href="{% url 'assesment-home' %}">Assessment</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Jobs</a>
+                <a class="nav-link" href="#">Profile</a>
             </li>
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="#">Jobs</a>
+            </li> -->
         </ul>
 
         {% if request.user.is_authenticated %}

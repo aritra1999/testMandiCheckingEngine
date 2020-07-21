@@ -1,4 +1,4 @@
-from .models import Question, Submission, IO
+from .models import Question, Submission
 
 import requests, os, time
 import subprocess
@@ -9,47 +9,67 @@ def code_checker(request, code, lang, question_hit, username):
     verdict_count = 0
     time_taken = 0.0
 
-    for io in ios:
-        test_input = io.input
-        test_output = io.output
-        run_command = ext = ""
-        run_file_name = ("media/Code/" + username + "_" + question_hit)
+    code_file_path = ("media/Code/" + username + "_" + question_hit)
+    for number in range(1, 11):
+        run_command = ""
+        ext = ""
+
+        input_file = "media/IO/" + str(question_hit) + "/input" + str(number) + ".in"
+        output_file = "media/IO/" + str(question_hit) + "/output" + str(number) + ".out"
+
+        test_output = open(output_file).read()
 
         if lang == 'c_cpp':
-            subprocess.run("g++ " + run_file_name + ".cpp -o " + run_file_name + ".out ", shell=True)
-            run_command = ("./" + run_file_name + ".out <" + run_file_name + ".in> " + run_file_name + ".txt")
+            subprocess.run("gcc " + code_file_path + ".c -o " + code_file_path, shell=True)
+            run_command = ("./" + code_file_path + " <" + input_file + "> " + code_file_path + ".out")
+            ext = ".c"
+        elif lang == 'c_plus':
+            subprocess.run("g++ " + code_file_path + ".cpp -o " + code_file_path, shell=True)
+            run_command = ("./" + code_file_path + " <" + input_file + "> " + code_file_path + ".out")
             ext = ".cpp"
-        elif lang == 'python':
-            run_command = ("python3 " + run_file_name + ".py <" + run_file_name + ".in> " + run_file_name + ".txt")
+        elif lang == 'python3':
+            run_command = ("python3 " + code_file_path + ".py <" + input_file + "> " + code_file_path + ".out")
             ext = ".py"
-        elif lang == 'java':
-            run_command = ("java " + run_file_name + ".java <" + run_file_name + ".in> " + run_file_name + ".txt")
-            ext = ".java"
 
-        open(run_file_name + ext, "w").write(code)
-        open(run_file_name + ".in", "w").write(test_input)
+        elif lang == 'python2':
+            run_command = ("python2 " + code_file_path + ".py <" + input_file + "> " + code_file_path + ".out")
+            ext = ".py"
+        elif lang == 'javascript':
+            run_command = ("node " + code_file_path + ".js <" + input_file + "> " + code_file_path + ".out")
+            ext = ".js"
+        elif lang == 'java':
+            run_command = ("java " + code_file_path + ".java <" + input_file + "> " + code_file_path + ".out")
+            ext = ".java"
+        elif lang == 'r':
+            run_command = ("Rscript " + code_file_path + ".R <" + input_file + "> " + code_file_path + ".out")
+            ext = ".R"
+
+        print("Command: ", run_command)
+        open(code_file_path + ext, "w").write(code)
 
         timeStarted = time.time()
-        subprocess.run(run_command, shell=True)
+        process = subprocess.run(run_command, shell=True)
         time_taken += time.time() - timeStarted
 
         try:
-            output = open(run_file_name + ".txt", "r").read()
+            output = open(code_file_path + ".out", "r").read()
         except:
-            return  0.00, "error"
+            return 0.00, "error"
 
-        if (output).strip() == (test_output).strip():verdict_count += 1
-        os.remove(run_file_name + ".txt")
+        if (output).strip() == (test_output).strip():
+            verdict_count += 1
+        # os.remove(code_file_path + ".out")
 
-    if verdict_count == len(ios):verdict = True
-    else: verdict = False
+    print("Count: ", verdict_count)
+    if verdict_count == 10:
+        verdict = True
+    else:
+        verdict = False
 
-
-    return time_taken, verdict
+    return (time_taken/10), verdict
 
 
 def gen_hit(title):
     hit = ""
-    for word in title.split():hit += word[0].upper()
+    for word in title.split(): hit += word[0].upper()
     return hit
-

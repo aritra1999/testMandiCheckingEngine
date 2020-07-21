@@ -9,8 +9,7 @@
         <form action="" id="code_form" method="POST">{% csrf_token %}
             <div class="row">
                 <div class="col-6">
-
-                    {% if error %}
+                     {% if error %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <strong>Compilation Error!</strong>
                             {{ error }}
@@ -35,6 +34,12 @@
                             </div>
                         {% endif %}
                     {% endif %}
+                    <div id="alertwindow" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong class="mr-4"><span id="resulttext"></span></strong> Time taken: <span id="timetaken"></span> s.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     <div class="row">
                         <div class="col-10">
                             <h2>{{ question.title }}</h2>
@@ -69,7 +74,7 @@
                 </div>
                 <div class="col-6">
                     <div class="row">
-                        <div class="col-5">
+                        <div class="col-3">
                             <h2>Submit</h2>
                             <small class="text-muted">
                                 <strong>Max File Size: 20MB</strong>
@@ -125,18 +130,21 @@
                                 </optgroup>
                             </select>
                         </div>
-                        <div class="col-2 sticky-top form-inline">
+                        <div class="col-4 sticky-top form-inline">
                             <select name="language" id="language" class="custom-select my-1"
-                                    onchange="change_lang(language)"
+                                    onchange="change_lang(language);change_default(language)"
                                     style="width: 200px" id="inlineFormCustomSelectPref">
-                                <option value="c_cpp" selected>C++</option>
+                                <!-- <option value="c_cpp" selected>C++</option>
                                 <option value="c_cpp">C</option>
                                 <option value="python">Python 3</option>
-                                <option value="java">Java</option>
+                                <option value="java">Java</option> -->
+                                {% for i in lang %}
+                                <option value="{{i.subvalue}}" data-subvalue="{{i.value}}">{{i.language}} ({{i.version}})</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-2 sticky-top">
-                            <button class="btn btn-warning mt-3 btn-block" type="button" onclick="code_submit()">
+                            <button class="btn btn-warning mt-3 btn-block" type="button" id="codesubmit" >
                                 Submit
                             </button>
                         </div>
@@ -150,8 +158,69 @@
 
     </div>
     <script>
-        var lang = "{{ language }}";
-        document.getElementById('language').value = lang;
+        // var lang = "{{ language }}";
+        // var lang = "python3";
+        // document.getElementById('language').value = lang;
+        // A $( document ).ready() block.
+        $( document ).ready(function() {
+            $('#language option[value="python3"]').attr('selected','selected');
+            editor.session.setMode("ace/mode/" + "python");
+            $.ajax({
+                url: "/metadata/language_default/",
+                data: {
+                    'sector': "python3"
+                },
+                success: function(output){
+                    editor.setValue(output)
+                    console.log(output);
+                }
+            });
+
+
+        });
+
     </script>
+
+<script>
+
+    $("#codesubmit").click(function (e) {
+        e.preventDefault();
+        var language = $('#language option:selected').val();
+        var solution= editor.getSession().getValue();
+
+        console.log(language);
+        console.log(solution);
+
+        $.ajax({
+                method:'POST',
+                url : '/question_validate/{{question.hit}}',
+                data: {
+                    language:language,
+                    solution:solution,
+                },
+                success: function(data){
+                    console.log(data);    
+                    if(data.error=="no error"){
+                        if(data.result="Correct Answer"){
+                            $("#resulttext").text(data.result);
+                            $("#timetaken").text(data.time_taken);
+                            $("#alertwindow").removeClass("alert-danger").addClass("alert-success");
+                        }
+                        else{
+                            $("#resulttext").text(data.result);
+                            $("#timetaken").text(data.time_taken);
+                            $("#alertwindow").removeClass("alert-success").addClass("alert-danger");
+                        }
+                    }
+                    else{
+                            $("#resulttext").text(data.result);
+                            $("#timetaken").text(data.time_taken);
+                            $("#alertwindow").removeClass("alert-success").addClass("alert-danger"); 
+                    }
+                }
+            });
+
+    });
+</script>
 
 {% endblock %}

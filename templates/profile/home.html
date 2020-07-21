@@ -1,0 +1,455 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+<style>
+    /* profile card tag */
+
+@import url("https://fonts.googleapis.com/css2?family=Muli:wght@400;700&display=swap");
+root {
+   --body-bg: hsl(0, 0%, 96%);
+   --clr-heading: hsl(98, 0%, 18%);
+   --clr-body: hsl(0, 0%, 42%);
+   --clr-green: hsl(161, 72%, 45%);
+
+   box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+   margin: 0;
+   padding: 0;
+   box-sizing: inherit;
+}
+html,
+/* body {
+   width: 100%;
+   min-height: 100vh;
+   font-size: 62.5%;
+}
+body {
+   font-size: 1.6rem;
+   line-height: 1.6;
+   font-family: "Muli", sans-serif;
+   background-color: var(--body-bg);
+   display: grid;
+   place-content: center;
+   color: var(--clr-body);
+} */
+
+img {
+   max-width: 100%;
+   display: block;
+   height: auto;
+}
+
+.wrapper {
+   max-width: 952px;
+   width: 100%;
+   margin: 0 auto;
+}
+
+.card {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 350px;
+   max-width: 100%;
+   background: white;
+   box-shadow: 0 20px 60px -25px rgba(black, 0.3);
+   padding: 40px;
+}
+
+.card__name {
+   display: flex;
+   align-items: center;
+}
+
+.card__head {
+   font-size: 2.6rem;
+   font-weight: bold;
+}
+
+.card__avatar {
+   width: 112px;
+   height: 112px;
+   margin-right: 1em;
+}
+
+.card__btn {
+   background: hsl(98, 0%, 18%);
+   color: white;
+   display: block;
+   text-align: center;
+   margin: 1em 0;
+   padding: 0.8em 2em;
+   text-decoration: none;
+}
+
+.icon {
+   display: inline-block;
+   vertical-align: middle;
+   margin-top: 3px;
+   margin-right: 0.5em;
+}
+
+.menu {
+   margin-top: 20px;
+   list-style: none;
+   display: flex;
+   align-items: center;
+   padding-bottom: 20px;
+
+}
+
+.menu__sub {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.menu__title {
+   font-size: 2rem;
+   font-weight: bold;
+}
+.menu__date {
+   font-size: 1.6rem;
+   color: rgba(black, 0.6);
+   font-weight: normal;
+}
+
+.posts {
+   padding: 30px 0;
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 2.6rem;
+}
+.post {
+   border: 1px solid hsl(218, 33%, 96%);
+   border-radius: 10px;
+   padding: 20px;
+}
+
+.post.active {
+   background: hsl(98, 0%, 18%);
+   color: white;
+}
+
+.post__header {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.post__title {
+   font-weight: bold;
+}
+
+.post__body {
+   margin-top: 12px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.post__percent {
+   color: hsl(161, 72%, 45%);
+}
+
+.post__numb {
+   font-size: 2.6rem;
+   font-weight: bold;
+}
+
+.grey-arr {
+   display: inline-block;
+   vertical-align: middle;
+   margin-left: 0.2em;
+}
+
+.row {
+    margin-left: -12px; /* Should be removed. Only for demonstration */
+    height: 20px;
+}
+
+.column {
+  float: left;
+  width: 100%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+@media (min-width: 970px) {
+   .card {
+      max-width: 1012px;
+      height: 1000px;
+      width: 100%;
+      background: white;
+      box-shadow: 0 20px 60px -25px rgba(black, 0.3);
+      padding: 0 60px;
+      border: 1px solid red;
+   }
+
+   .card__header {
+      margin-top: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 30px;
+      border-bottom: 1px solid hsl(218, 23%, 91%);
+   }
+
+   .card__name {
+      display: flex;
+      align-items: center;
+   }
+
+   .card__head {
+      font-size: 2.6rem;
+      font-weight: bold;
+   }
+
+   .card__sub {
+      font-size: 1.4rem;
+      font-weight: normal;
+      color: rgba(black, 0.6);
+   }
+
+   .card__sub__1{
+      font-size: 1rem;
+      font-weight: normal;
+      color: rgba(black, 0.6);
+   }
+
+   .card__btn {
+      background: hsl(98, 0%, 18%);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.8em 2em;
+      text-decoration: none;
+   }
+
+   .icon {
+      display: inline-block;
+      vertical-align: middle;
+      margin-top: 3px;
+      margin-right: 0.5em;
+   }
+
+   .menu {
+      margin-top: 20px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      padding-bottom: 20px;
+   }
+
+   .menu__sub {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+   }
+
+   .menu__title {
+      font-size: 2rem;
+      font-weight: bold;
+   }
+   .menu__date {
+      font-size: 1.6rem;
+      color: rgba(black, 0.6);
+      font-weight: normal;
+   }
+
+   .posts {
+      padding: 47px 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.6rem;
+   }
+
+   .post {
+      border: 1px solid hsl(218, 33%, 96%);
+      border-radius: 10px;
+      padding: 20px;
+   }
+
+   .post.active {
+      background: hsl(98, 0%, 18%);
+      color: white;
+   }
+
+   .post__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+   }
+
+   .post__title {
+      font-weight: bold;
+   }
+
+   .post__body {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+   }
+
+   .post__percent {
+      color: hsl(161, 72%, 45%);
+   }
+
+   .post__numb {
+      font-size: 2.6rem;
+      font-weight: bold;
+   }
+
+   .grey-arr {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.2em;
+   }
+}
+
+</style>
+
+    <div class="container p-5">
+        <div class="card">
+            <div class="wrapper">
+               <header class="card__header">
+                  <div class="card__name">
+                     <img class="card__avatar" src="https://www.drupal.org/files/project-images/u-7.png" />
+                     <div class="card__title">
+                        <h5 class="card__head">
+                           Prithviraj Radhakrishnan
+                        </h5>
+                        <span class="card__sub">
+                           Looking for a awesome opportunity in the Linkedin Domain space 
+                        </span>
+
+                     </div>
+                  </div>
+                  <a href="#" class="card__btn btn btn--edit"> <span class="icon">
+                        <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                           <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                              <g id="" transform="translate(-1158.000000, -428.000000)">
+                                 <g id="Group-6" transform="translate(294.000000, 322.000000)">
+                                    <g id="Group-3" transform="translate(831.000000, 89.000000)">
+                                       <g id="Group-2">
+                                          <g id="Group" transform="translate(30.000000, 15.000000)">
+                                             <polygon id="Path" points="0 0 25 0 25 25 0 25"></polygon>
+                                             <path d="M9.375,7.29166667 L6.25,7.29166667 C5.09940677,7.29166667 4.16666667,8.22440677 4.16666667,9.375 L4.16666667,18.75 C4.16666667,19.9005932 5.09940677,20.8333333 6.25,20.8333333 L15.625,20.8333333 C16.7755932,20.8333333 17.7083333,19.9005932 17.7083333,18.75 L17.7083333,15.625" id="Path" stroke="#FFFFFF" stroke-width="1.5625" stroke-linecap="round" stroke-linejoin="round"></path>
+                                             <path d="M9.375,15.625 L12.5,15.625 L21.3541667,6.77083333 C22.2171116,5.90788841 22.2171116,4.50877825 21.3541667,3.64583333 C20.4912217,2.78288841 19.0921116,2.78288841 18.2291667,3.64583333 L9.375,12.5 L9.375,15.625" id="Path" stroke="#FFFFFF" stroke-width="1.5625" stroke-linecap="round" stroke-linejoin="round"></path>
+                                             <path d="M16.6666667,5.20833333 L19.7916667,8.33333333" id="Path" stroke="#FFFFFF" stroke-width="1.5625" stroke-linecap="round" stroke-linejoin="round"></path>
+                                          </g>
+                                       </g>
+                                    </g>
+                                 </g>
+                              </g>
+                           </g>
+                        </svg>
+                     </span>Edit</a>
+               </header>
+               <main class="main">
+                  <ul class="menu">
+                     <li class="menu__item active">I am a person who is positive about every aspect of life. There are many things I like to do, to see, and to experience. I like to read, I like to write; I like to think, I like to dream; I like to talk, I like to listen. I like to see the sunrise in the morning, I like to see the moonlight at night; I like to feel the music flowing on my face, I like to smell the wind coming from the ocean. I like to look at the clouds in the sky with a blank mind, I like to do thought experiment when I cannot sleep in the middle of the night. I like flowers in spring, rain in summer, leaves in autumn, and snow in winter. I like to sleep early, I like to get up late; I like to be alone, I like to be surrounded by people. I like country’s peace, I like metropolis’ noise; I like the beautiful west lake in Hangzhou, I like the flat cornfield in Champaign. I like delicious food and comfortable shoes; I like good books and romantic movies. I like the land and the nature, I like people. And, I like to laugh.</li>
+
+                  </ul>
+                <div class="row">
+                    <div class="column">
+                        <span class="card__sub__1">
+                            <b>Contact Number</b> : 9486875027                     
+                         </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <span class="card__sub__1">
+                            <b>I'am</b> : Student
+                         </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <span class="card__sub__1">
+                            <b>My Website</b> : <a href="#">www.prithvi.com</a>
+                         </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <span class="card__sub__1">
+                            <b>Linkedin</b> : <a href="#">www.Linkedin.com</a>
+                         </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <span class="card__sub__1">
+                            <b>Years of exp</b> : 5 years
+                         </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <span class="card__sub__1">
+                            <b>Open for Job</b> : Yes
+                         </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <span class="card__sub__1">
+                            <b>Resume</b> : Yes
+                         </span>
+                    </div>
+                </div>
+                  <header class="menu__sub">
+                     <h6 class="menu__title">Insights</h6>
+                     <!-- <span class="menu__date">May 28 - Jun 24 <span class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="8">
+                              <path d="M13 1L7 7 1 1" stroke="#2E2E2E" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" /></svg></span></span> -->
+                              <span class="menu__date">Data Since Account Started  <span class="arrow"><!--<svg xmlns="http://www.w3.org/2000/svg" width="14" height="8">
+                                <path d="M13 1L7 7 1 1" stroke="#2E2E2E" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" />--></svg></span></span>                
+                  </header>
+                  <section class="posts">
+                     <div class="post active">
+                        <header class="post__header">
+                           <span class="post__title">Total Practice Taken</span>
+                           <span class="post__percent">
+                              <span class="up-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="5">
+                                    <path d="M0 5l5-5 5 5" fill="#20C792" fill-rule="evenodd" /></svg></span> 7%</span>
+                        </header>
+                        <div class="post__body">
+                           <span class="post__numb">1,090</span>
+                           <small class="post__more">More info <span class="grey-arr"><svg xmlns="http://www.w3.org/2000/svg" width="7" height="12">
+                                    <path d="M1 1l5 5-5 5" stroke="#FFF" stroke-width="1.25" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" opacity=".7" /></svg></span></small>
+                        </div>
+                     </div>
+                     <div class="post active">
+                        <header class="post__header">
+                           <span class="post__title">Correct Submissions</span>
+                           <span class="post__percent"> <span class="up-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="5">
+                                    <path d="M0 5l5-5 5 5" fill="#20C792" fill-rule="evenodd" /></svg></span> 25%</span>
+                        </header>
+                        <div class="post__body">
+                           <span class="post__numb">305</span>
+                        </div>
+                     </div>
+                     <div class="post active">
+                        <header class="post__header">
+                           <span class="post__title">Leadership Score</span>
+                           <span class="post__percent"> <span class="up-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="5">
+                                    <path d="M0 5l5-5 5 5" fill="#20C792" fill-rule="evenodd" /></svg></span> 18%</span>
+                        </header>
+                        <div class="post__body">
+                           <span class="post__numb">13</span>
+                        </div>
+                     </div>
+                  </section>
+               </main>
+            </div>
+         </div>
+    </div>
+
+
+{% endblock %}
