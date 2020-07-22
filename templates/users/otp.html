@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+    <div class="container p-5">
+        <h3>Enter your 6 digit OTP</h3>
+        {{ error }}
+        <form action="" method="POST">{% csrf_token %}
+            <div class="form-row align-items-center">
+                <div class="col-sm-5 my-1">
+                    <label class="sr-only" for="inlineFormInputName">Name</label>
+                    <input type="text" class="form-control" placeholder="Enter 6 digit OTP" name="otp">
+
+                </div>
+                <div class="col-auto my-1">
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+{% endblock %}

@@ -1,13 +1,13 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.conf import settings
-from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
 
+import random
+from .email import email_message
+from .models import OTPLog
 
 def auth_view(request):
-
     context = {
         "title": "Authentication",
         "reg_error": [],
@@ -29,40 +29,64 @@ def auth_view(request):
                 context['login_error'].append("Username and password do not match!")
 
         elif request.POST.get('form-type') == "register":
-            username = request.POST.get('username')
-            f_name = request.POST.get('f_name')
-            l_name = request.POST.get('l_name')
-            email = request.POST.get('email')
-            password1 = request.POST.get('password1')
-            password2 = request.POST.get('password2')
 
-
-            if password1 == password2:
-                if User.objects.filter(username=username).exists():
-                    context["reg_error"].append("Username already in use!")
+            if request.POST.get('password1') == request.POST.get('password2'):
+                if User.objects.filter(email=request.POST.get('email')).exists():
+                    context["reg_error"].append("Email already in use!")
                 else:
-                    if User.objects.filter(email=email).exists():
-                        context["reg_error"].append("Email already in use!")
-                    else:
-                        User.objects.create_user(username=username, first_name=f_name, last_name=l_name, email=email, password=password1)
-                        user = authenticate(request, username=username, password=password1)
-                        if user is not None:
-                            login(request, user)
-                            return redirect("/")
+                    request.session['f_name'] = request.POST.get('f_name')
+                    request.session['l_name'] = request.POST.get('l_name')
+                    request.session['email'] = request.POST.get('email')
+                    request.session['password'] = request.POST.get('password1')
+
+                    otp = random.randint(100000, 999999)
+
+                    message = 'Your OTP is: ' + str(otp)
+                    email_message(request.POST.get('email'), 'Registration OTP', message)
+                    OTPLog.objects.create(email=request.POST.get('email'), otp=otp).save()
+                    print(otp)
+                    return redirect("/auth/otp")
             else:
                 context["reg_error"].append("Passwords don't match!")
 
-
     return render(request, 'users/auth.html', context)
 
+def auth_otp_view(request):
+    context = {
+        'title': "OTP"
+    }
+    if request.method == "POST":
+        otp = OTPLog.objects.get(email=request.session['email'])
+        # otp = '999999'
+        print(otp, request.POST.get('otp'))
+        if int(request.POST.get('otp')) == int(otp.otp):
+            User.objects.create_user(
+                username = request.session['email'],
+                first_name = request.session['f_name'],
+                last_name = request.session['l_name'],
+                email = request.session['email'],
+                password = request.session['password']
+            )
+            user = authenticate(request, username=request.session['email'], password=request.session['password'])
+            if user is not None:
+                login(request, user)
 
-def email_message(request):
-    subject = 'Thank you for registering to our site'
-    message = ' it  means a world to us '
-    body = "Hii Prithvi Test Mandi Pesren :) "
-    hbody = "Hii Prithvi Test Mandi Pesren :) "
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = ['prithvi.iiml@gmail.com',]
-    msg = EmailMultiAlternatives(subject, body, 'xxxx@abc.com', [recipient_list])
-    msg.attach_alternative(hbody, "text/html")
-    msg.send()
+            return redirect('/')
+        else:
+            context['error'] = "Wrong OTP"
+    return render(request, 'users/otp.html', context)
+
+
+def test_email_view(request):
+    context = {
+        'title': 'Test Email Sending'
+    }
+    if request.method == "POST":
+        email = request.POST.get('email')
+        message = 'The email function works'
+
+        if email_message(email, 'This is a test email',message):
+            context['sent'] = "Message Sent"
+        else:
+            context['sent'] = "Unknown Error, please try again later"
+    return render(request, "users/email_test.html", context)
