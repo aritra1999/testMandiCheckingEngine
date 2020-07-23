@@ -23,15 +23,17 @@
             {% endif %}
             <input type="hidden" name="form-type" value="register">
             {#            <span>or use your email for registration</span>#}
-{#            <input type="text" name="username" placeholder="Username" required/>#}
+            {#            <input type="text" name="username" placeholder="Username" required/>#}
             <input type="email" name="email" placeholder="Email" required/>
-
             <input type="text" name="f_name" placeholder="First Name" required/>
-            <input type="text" name="l_name" placeholder="Middel Name and Last Name" required/>
-
+            <input type="text" name="l_name" placeholder="Last Name" required/>
+            <select id="user_type" name="user_type">
+                <option value="student">Student</option>
+                <option value="organization">Organization</option>
+            </select>
             <input type="password" name="password1" placeholder="Password" required/>
             <input type="password" name="password2" placeholder="Confirm Password" required/>
-            {#            <input type="number" placeholder="Enter Email OTP"/>#}
+
             <br>
             <button type="submit">Sign Up</button>
         </form>
