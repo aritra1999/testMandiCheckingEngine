@@ -83,6 +83,7 @@ def auth_details_view(request):
     context = {
         'title': 'Registration Details'
     }
+
     if request.session['user_type'] == "organization":
         if request.method == "POST":
             OrgProfile.objects.create(
@@ -109,6 +110,47 @@ def auth_details_view(request):
             ).save()
             return redirect('/')
         return render(request, 'users/student.html', context)
+
+
+@login_required
+def profile_view(request):
+    user = request.user
+
+    if request.method == "POST":
+        user_type = request.POST.get('user_type')
+        if user_type == "Organization":
+            instance = OrgProfile.objects.get(user=user)
+            instance.company_name = request.POST.get('company_name')
+            instance.contact_number = request.POST.get('contact_number')
+            instance.country = request.POST.get('country')
+            instance.website = request.POST.get('website')
+            instance.save()
+        else:
+            instance = StudentProfile.objects.get(user=user)
+            instance.contact_number = request.POST.get('contact_number')
+            instance.country = request.POST.get('country')
+            instance.headline = request.POST.get('headline')
+            instance.about_me = request.POST.get('about_me')
+            instance.website = request.POST.get('website')
+            instance.social_website = request.POST.get('social_website')
+            instance.years_exp = request.POST.get('years_exp')
+            instance.jobs_open = request.POST.get('jobs_open')
+            instance.save()
+
+    try:
+        profile = StudentProfile.objects.get(user=user)
+        user_type = "Student"
+    except:
+        profile = OrgProfile.objects.get(user=user)
+        user_type = "Organization"
+
+    context = {
+        'title': user.username,
+        'user': user,
+        'profile': profile,
+        'user_type': user_type
+    }
+    return render(request, 'users/profile.html', context)
 
 
 def test_email_view(request):

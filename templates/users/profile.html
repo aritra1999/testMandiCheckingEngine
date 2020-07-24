@@ -1,0 +1,99 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+    <div class="container p-5">
+        <h1>{{ user_type }} Profile</h1>
+        <hr>
+        Email: {{ user.username }} <br>
+        Name: {{ user.first_name }}&nbsp;{{ user.last_name }}
+        <hr>
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                {% if user_type == "Organization" %}
+                    <form action="" method="POST"> {% csrf_token %}
+                        <input type="hidden" value="{{ user_type }}" name="user_type">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" class="form-control" placeholder="Enter company name" name="company_name" value="{{ profile.company_name }}"
+                                   required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="tel" class="form-control" placeholder="Enter contact number" value="{{ profile.contact_number }}"
+                                   name="contact_number" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Country</label>
+                            <input type="text" class="form-control" placeholder="Enter country" name="country" value="{{ profile.country }}"
+                                   required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Website</label>
+                            <input type="url" class="form-control" placeholder="Enter website url" name="website" value="{{ profile.website }}"
+                                   required/>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-5 py-2 m-3">Save</button>
+                    </form>
+                {% elif user_type == "Student" %}
+                    <form action="" method="POST"> {% csrf_token %}
+                        <input type="hidden" value="{{ user_type }}" name="user_type">
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="tel" class="form-control" placeholder="Enter contact number"
+                                   value="{{ profile.contact_number }}"
+                                   name="contact_number" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Country</label>
+                            <input type="text" class="form-control" placeholder="Enter country" name="country"
+                                   value="{{ profile.country }}"
+                                   required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Headline</label>
+                            <input type="text" class="form-control" placeholder="Enter headline" name="headline"
+                                   value="{{ profile.headline }}"
+                                   required/>
+                        </div>
+                        <div class="form-group">
+                            <label>About Me</label>
+                            <input type="text" class="form-control" placeholder="About Me" name="about_me"
+                                   value="{{ profile.about_me }}"
+                                   required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Personal Website</label>
+                            <input type="url" class="form-control" placeholder="Enter website url" name="website"
+                                   value="{{ profile.website }}"
+                                   required/>
+                        </div>
+                        <div class="form-group">
+                            <label>LinkedIn</label>
+                            <input type="url" class="form-control" placeholder="Enter LinkedIn URL"
+                                   value="{{ profile.social_website }}"
+                                   name="social_website" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Years in Experience</label>
+                            <input type="number" class="form-control" placeholder="Enter experience" name="years_exp"
+                                   value="{{ profile.years_exp }}"
+                                   required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Jobs Open</label>
+                            <input type="text" class="form-control" placeholder="Enter Jobs Open" name="jobs_open"
+                                   value="{{ profile.job_open }}"
+                                   required/>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-5 py-2 m-3">Save</button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+
+{% endblock %}
+

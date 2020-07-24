@@ -13,14 +13,12 @@
             {% if request.user.is_staff %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'staff' %}">Staff Access</a>
-                </li>ll
+                </li>
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'dashboard' %}">Home</a>
                 </li>
             {% endif %}
-
-
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'question-list' %}">Practice</a>
             </li>
@@ -28,7 +26,7 @@
                 <a class="nav-link" href="{% url 'assesment-home' %}">Assessment</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
+                <a class="nav-link" href="{% url 'profile' %}">Profile</a>
             </li>
             <!-- <li class="nav-item">
                 <a class="nav-link" href="#">Jobs</a>
